@@ -5,7 +5,6 @@ import '../public/style/fonts.css';
 import './style.scss';
 
 // source script
-import '@/_index';
 import {MatchMediaScreen} from "@/_index";
 
 // import package info
@@ -23,4 +22,28 @@ document.querySelector('[data-description]').innerHTML = packageInfo.description
 /**
  * Lib usage
  */
-new MatchMediaScreen();
+console.group(packageInfo.prettyName);
+
+new MatchMediaScreen({
+    object: {
+        test: true,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    test: 1024
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    test: 480
+                }
+            }
+        ],
+    },
+    onMatched: data => {
+        console.table(data)
+        document.querySelector('[data-code]').innerHTML = JSON.stringify(data);
+    }
+});
