@@ -45,5 +45,8 @@ new MatchMediaScreen({
     onMatched: data => {
         console.table(data)
         document.querySelector('[data-code]').innerHTML = JSON.stringify(data);
+    },
+    onUpdate: data => {
+        console.log(data)
     }
 });

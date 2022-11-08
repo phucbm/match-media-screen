@@ -1,4 +1,4 @@
-import {uniqueId} from "./utils";
+import {debounce, getSortedArray} from "./utils";
 
 
 /**
@@ -7,13 +7,14 @@ import {uniqueId} from "./utils";
 export class MatchMediaScreen{
     constructor(config){
         this.object = config.object || undefined;
-        if(!this.object) return;
+        if(!this.object){
+            console.warn(`Property object:{} must be provided.`);
+            return;
+        }
 
         // callbacks
-        this.onMatched = config.onMatched || function(){
-        };
-        this.onUpdate = config.onUpdate || function(){
-        };
+        this.onMatched = config.onMatched; // on media screen matched
+        this.onUpdate = config.onUpdate; // on resize
 
         // exit if there is no responsive object
         if(!this.object.responsive){
@@ -29,23 +30,27 @@ export class MatchMediaScreen{
             if(typeof this.onMatched === 'function'){
                 this.onMatched(this.currentObject);
             }
+
+            console.warn(`Property object must have responsive array.`);
             return false;
         }
 
+        /** isInherit: inherit up to the closest breakpoint **/
         // if the current object don't have this key, search from the closest breakpoint above
         this.isInherit = typeof config.isInherit === 'undefined' ? true : config.isInherit;
+
+        /** debounce: resize debounce time (default is 100ms) **/
+        this.debounce = config.debounce || 100;
 
         /** Current object bases on responsive data **/
         this.currentObject = {breakpoint: undefined, object: {}};
 
         /** Sort responsive breakpoints from big to small **/
-        this.object.responsive = this.getSortedArray(this.object.responsive);
+        this.object.responsive = getSortedArray(this.object.responsive);
 
         /** Matching **/
         this.match();
-        window.addEventListener('resize', () => {
-            this.match();
-        });
+        window.addEventListener('resize', debounce(() => this.match(), this.debounce));
     }
 
     match(){
@@ -118,17 +123,6 @@ export class MatchMediaScreen{
         return query;
     }
 
-    getSortedArray(array, isASC = true){
-        const newArray = [...array];
-
-        if(isASC){
-            newArray.sort((a, b) => a.breakpoint < b.breakpoint && 1 || -1);
-        }else{
-            newArray.sort((a, b) => a.breakpoint > b.breakpoint && 1 || -1);
-        }
-
-        return newArray;
-    }
 
     mergeObject(breakpoint, newObject){
         // clone new object
@@ -136,7 +130,7 @@ export class MatchMediaScreen{
 
         // if is inherited, check for previous breakpoint
         if(this.isInherit && breakpoint !== -1){
-            const reversedBreakpoints = this.getSortedArray(this.object.responsive, false);
+            const reversedBreakpoints = getSortedArray(this.object.responsive, false);
 
             for(let i = 0; i < reversedBreakpoints.length; i++){
                 // only check for bigger breakpoint
