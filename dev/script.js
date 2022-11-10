@@ -26,18 +26,18 @@ console.group(packageInfo.prettyName);
 
 new MatchMediaScreen({
     object: {
-        test: true,
+        value: 'desktop',
         responsive: [
             {
                 breakpoint: 1024,
                 settings: {
-                    test: 1024
+                    value: 'tablet',
                 }
             },
             {
                 breakpoint: 480,
                 settings: {
-                    test: 480
+                    value: 'mobile',
                 }
             }
         ],
