@@ -4,7 +4,7 @@
 [![minified](https://badgen.net/badge/minified/3KB/cyan)](https://www.jsdelivr.com/package/gh/phucbm/match-media-screen)
 [![jsdelivr](https://data.jsdelivr.com/v1/package/gh/phucbm/match-media-screen/badge?style=rounded)](https://www.jsdelivr.com/package/gh/phucbm/match-media-screen)
 [![license](https://badgen.net/github/license/phucbm/match-media-screen/)](https://github.com/phucbm/match-media-screen/blob/main/LICENSE)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/baaede11-84dc-46b3-b434-11aad923a156/deploy-status)](https://app.netlify.com/sites/match-media-screen/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/1cc036c8-c6d1-4404-adbd-52182abbdd78/deploy-status)](https://app.netlify.com/sites/match-media-screen/deploys)
 
 > Observe window.resize and fire corresponding events with given object data.
 
