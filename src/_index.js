@@ -19,6 +19,16 @@ export class MatchMediaScreen{
         this.onMatched = config.onMatched; // on media screen matched
         this.onUpdate = config.onUpdate; // on resize
 
+        // callback onUpdate
+        window.addEventListener('resize',
+            debounce(
+                () => {
+                    if(typeof this.onUpdate === 'function') this.onUpdate(this.currentObject);
+                },
+                this.debounce
+            )
+        );
+
         // exit if there is no responsive object
         if(!this.object.responsive){
             // update
@@ -103,11 +113,6 @@ export class MatchMediaScreen{
             if(typeof this.onMatched === 'function'){
                 this.onMatched(this.currentObject);
             }
-        }
-
-        // callback onUpdate
-        if(typeof this.onUpdate === 'function'){
-            this.onUpdate(this.currentObject);
         }
     }
 

@@ -47,6 +47,6 @@ new MatchMediaScreen({
         document.querySelector('[data-code]').innerHTML = JSON.stringify(data);
     },
     onUpdate: data => {
-        console.log(data)
+        console.log('onUpdate', data)
     }
 });
