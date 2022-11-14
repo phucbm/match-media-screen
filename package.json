@@ -3,7 +3,7 @@
   "outputFilename": "match-media-screen",
   "prettyName": "Match Media Screen",
   "codeName": "MatchMediaScreen",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Observe window.resize and fire corresponding events with given object data.",
   "homepage": "https://github.com/phucbm/match-media-screen",
   "repository": {

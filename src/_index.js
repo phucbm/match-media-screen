@@ -6,9 +6,12 @@ import {debounce, getSortedArray} from "./utils";
  */
 export class MatchMediaScreen{
     constructor(config){
+        // options
+        this.dev = config.dev === true;
+
         this.object = config.object || undefined;
         if(!this.object){
-            console.warn(`Property object:{} must be provided.`);
+            console.error(`Property object:{} must be provided.`);
             return;
         }
 
@@ -31,7 +34,7 @@ export class MatchMediaScreen{
                 this.onMatched(this.currentObject);
             }
 
-            console.warn(`Property object must have responsive array.`);
+            if(this.dev) console.warn(`Property object must have responsive array.`);
             return false;
         }
 
