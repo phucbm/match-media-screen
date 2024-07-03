@@ -1,3 +1,7 @@
+const path = require('path');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const packageInfo = require('../package.json');
 
 /**
@@ -5,7 +9,6 @@ const packageInfo = require('../package.json');
  * scripts: cross-env NODE_ENV=development
  */
 const env = process.env;
-
 
 /**
  * Banner
@@ -21,15 +24,13 @@ const bannerConfig = {
     raw: true
 };
 
-
 /**
  * Paths
  */
-const path = require('path');
 const paths = {
     // Source files
     src: path.resolve(__dirname, '../src'),
-    entry: path.resolve(__dirname, '../src/_index.js'),
+    entry: path.resolve(__dirname, '../src/_index.ts'),
 
     // Production build files
     dist: path.resolve(__dirname, '../dist'),
@@ -41,14 +42,15 @@ const paths = {
     public: path.resolve(__dirname, '../public'),
 };
 
-
 /**
  * Server
  */
 const server = {
-    // Determine how modules within the project are treated
     module: {
         rules: [
+            // TypeScript: Use Babel to transpile TypeScript files
+            {test: /\.ts$/, use: ['babel-loader']},
+
             // JavaScript: Use Babel to transpile JavaScript files
             {test: /\.js$/, use: ['babel-loader']},
 
@@ -59,7 +61,7 @@ const server = {
             {test: /\.(woff(2)?|eot|ttf|otf|svg|)$/, type: 'asset/inline'},
 
             // HTML
-            {test: /\.html$/i, loader: "html-loader",},
+            {test: /\.html$/i, loader: "html-loader"},
 
             // Styles: Inject CSS into the head with source maps
             {
@@ -79,25 +81,14 @@ const server = {
 
     resolve: {
         modules: [paths.src, 'node_modules'],
-        extensions: ['.js', '.jsx', '.json'],
+        extensions: ['.ts', '.js', '.json'],
         alias: {
             '@': paths.src,
             assets: paths.public,
         },
     },
 
-    // Control how source maps are generated
     devtool: 'inline-source-map',
 };
 
-
-/**
- * Export
- */
-module.exports = {
-    paths,
-    packageInfo,
-    bannerConfig,
-    server,
-    env
-};
+module.exports = {paths, packageInfo, bannerConfig, server, env};

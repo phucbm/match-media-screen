@@ -1,36 +1,66 @@
 import {debounce, getSortedArray} from "./utils";
 
+interface ResponsiveSetting {
+    breakpoint: number;
+    settings: Record<string, any>;
+}
+
+interface MatchMediaScreenConfig {
+    dev?: boolean;
+    object: {
+        responsive?: ResponsiveSetting[];
+        [key: string]: any;
+    };
+    onMatched?: (currentObject: any) => void;
+    onUpdate?: (currentObject: any) => void;
+    isInherit?: boolean;
+    debounce?: number;
+}
+
+interface CurrentObject {
+    type: string;
+    lastBreakpoint?: number;
+    breakpoint: number;
+    object: Record<string, any>;
+}
 
 /**
  * Public class
  */
-export class MatchMediaScreen{
-    constructor(config){
-        // options
+export class MatchMediaScreen {
+    private readonly dev: boolean;
+    private readonly object: MatchMediaScreenConfig["object"];
+    private readonly onMatched?: (currentObject: CurrentObject) => void;
+    private readonly onUpdate?: (currentObject: CurrentObject) => void;
+    private readonly isInherit: boolean;
+    private readonly debounce: number;
+    private currentObject: CurrentObject;
+
+    constructor(config: MatchMediaScreenConfig) {
         this.dev = config.dev === true;
 
         this.object = config.object || undefined;
-        if(!this.object){
+        if (!this.object) {
             console.error(`Property object:{} must be provided.`);
             return;
         }
 
         // callbacks
-        this.onMatched = config.onMatched; // on media screen matched
-        this.onUpdate = config.onUpdate; // on resize
+        this.onMatched = config.onMatched;
+        this.onUpdate = config.onUpdate;
 
         // callback onUpdate
         window.addEventListener('resize',
             debounce(
                 () => {
-                    if(typeof this.onUpdate === 'function') this.onUpdate(this.currentObject);
+                    if (typeof this.onUpdate === 'function') this.onUpdate(this.currentObject);
                 },
                 this.debounce
             )
         );
 
         // exit if there is no responsive object
-        if(!this.object.responsive){
+        if (!this.object.responsive) {
             // update
             this.currentObject = {
                 type: 'no-responsive',
@@ -40,46 +70,45 @@ export class MatchMediaScreen{
             };
 
             // callback onMatched
-            if(typeof this.onMatched === 'function'){
+            if (typeof this.onMatched === 'function') {
                 this.onMatched(this.currentObject);
             }
 
-            if(this.dev) console.warn(`Property object must have responsive array.`);
-            return false;
+            if (this.dev) console.warn(`Property object must have responsive array.`);
+            return;
         }
 
-        /** isInherit: inherit up to the closest breakpoint **/
-        // if the current object don't have this key, search from the closest breakpoint above
+        // isInherit: inherit up to the closest breakpoint
         this.isInherit = typeof config.isInherit === 'undefined' ? true : config.isInherit;
 
-        /** debounce: resize debounce time (default is 100ms) **/
+        // debounce: resize debounce time (default is 100ms)
         this.debounce = config.debounce || 100;
 
-        /** Current object bases on responsive data **/
-        this.currentObject = {breakpoint: undefined, object: {}};
+        // Current object bases on responsive data
+        this.currentObject = {type: "", breakpoint: undefined, object: {}};
 
-        /** Sort responsive breakpoints from big to small **/
+        // Sort responsive breakpoints from big to small
         this.object.responsive = getSortedArray(this.object.responsive);
 
-        /** Matching **/
+        // Matching
         this.match();
         window.addEventListener('resize', debounce(() => this.match(), this.debounce));
     }
 
-    match(){
+    match() {
         let isMatched = false;
 
         // loop through all breakpoints
-        for(let i = 0; i < this.object.responsive.length; i++){
+        for (let i = 0; i < this.object.responsive.length; i++) {
             const breakpointData = this.object.responsive[i];
 
             // match query
             isMatched = matchMedia(this.getQuery(i)).matches;
 
             // if matched
-            if(isMatched){
+            if (isMatched) {
                 // and is a new breakpoint
-                if(this.currentObject.breakpoint !== breakpointData.breakpoint){
+                if (this.currentObject.breakpoint !== breakpointData.breakpoint) {
                     // update
                     this.currentObject = {
                         type: 'responsive',
@@ -89,7 +118,7 @@ export class MatchMediaScreen{
                     };
 
                     // callback onMatched
-                    if(typeof this.onMatched === 'function'){
+                    if (typeof this.onMatched === 'function') {
                         this.onMatched(this.currentObject);
                     }
                 }
@@ -100,7 +129,7 @@ export class MatchMediaScreen{
         }
 
         // if no matching
-        if(!isMatched && this.currentObject.breakpoint !== -1){
+        if (!isMatched && this.currentObject.breakpoint !== -1) {
             // update
             this.currentObject = {
                 type: 'default',
@@ -110,39 +139,38 @@ export class MatchMediaScreen{
             };
 
             // callback onMatched
-            if(typeof this.onMatched === 'function'){
+            if (typeof this.onMatched === 'function') {
                 this.onMatched(this.currentObject);
             }
         }
     }
 
     // get query string from breakpoint
-    getQuery(breakpointIndex){
+    getQuery(breakpointIndex: number): string {
         const breakpoint = this.object.responsive[breakpointIndex].breakpoint;
 
         let query = `screen and (max-width:${breakpoint}px)`;
 
         // set the min breakpoint if any
         const nextBreakpoint = this.object.responsive[breakpointIndex + 1];
-        if(nextBreakpoint){
+        if (nextBreakpoint) {
             query += ` and (min-width:${nextBreakpoint.breakpoint + 1}px)`
         }
 
         return query;
     }
 
-
-    mergeObject(breakpoint, newObject){
+    mergeObject(breakpoint: number, newObject: Record<string, any>): Record<string, any> {
         // clone new object
         let object = {...newObject};
 
         // if is inherited, check for previous breakpoint
-        if(this.isInherit && breakpoint !== -1){
+        if (this.isInherit && breakpoint !== -1) {
             const reversedBreakpoints = getSortedArray(this.object.responsive, false);
 
-            for(let i = 0; i < reversedBreakpoints.length; i++){
+            for (let i = 0; i < reversedBreakpoints.length; i++) {
                 // only check for bigger breakpoint
-                if(reversedBreakpoints[i].breakpoint > breakpoint){
+                if (reversedBreakpoints[i].breakpoint > breakpoint) {
                     object = {...reversedBreakpoints[i].settings, ...object};
                 }
             }
