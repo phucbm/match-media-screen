@@ -20,7 +20,7 @@ interface MatchMediaScreenConfig {
 interface CurrentObject {
     type: string;
     lastBreakpoint?: number;
-    breakpoint: number;
+    breakpoint: number | undefined;
     object: Record<string, any>;
 }
 
@@ -31,10 +31,10 @@ export class MatchMediaScreen {
     private readonly dev: boolean;
     private readonly object: MatchMediaScreenConfig["object"];
     private readonly onMatched?: (currentObject: CurrentObject) => void;
-    private readonly onUpdate?: (currentObject: CurrentObject) => void;
-    private readonly isInherit: boolean;
-    private readonly debounce: number;
-    private currentObject: CurrentObject;
+    private readonly onUpdate?: (currentObject: CurrentObject | undefined) => void;
+    private readonly isInherit: boolean | undefined;
+    private readonly debounce: number | undefined;
+    private currentObject: CurrentObject | undefined;
 
     constructor(config: MatchMediaScreenConfig) {
         this.dev = config.dev === true;
@@ -96,40 +96,43 @@ export class MatchMediaScreen {
     }
 
     match() {
+        if (!this.currentObject) return;
         let isMatched = false;
 
         // loop through all breakpoints
-        for (let i = 0; i < this.object.responsive.length; i++) {
-            const breakpointData = this.object.responsive[i];
+        if (this.object.responsive) {
+            for (let i = 0; i < this.object.responsive.length; i++) {
+                const breakpointData = this.object.responsive[i];
 
-            // match query
-            isMatched = matchMedia(this.getQuery(i)).matches;
+                // match query
+                isMatched = matchMedia(<string>this.getQuery(i)).matches;
 
-            // if matched
-            if (isMatched) {
-                // and is a new breakpoint
-                if (this.currentObject.breakpoint !== breakpointData.breakpoint) {
-                    // update
-                    this.currentObject = {
-                        type: 'responsive',
-                        lastBreakpoint: this.currentObject.breakpoint,
-                        breakpoint: breakpointData.breakpoint,
-                        object: this.mergeObject(breakpointData.breakpoint, breakpointData.settings)
-                    };
+                // if matched
+                if (isMatched) {
+                    // and is a new breakpoint
+                    if (this.currentObject.breakpoint !== breakpointData.breakpoint) {
+                        // update
+                        this.currentObject = {
+                            type: 'responsive',
+                            lastBreakpoint: this.currentObject.breakpoint,
+                            breakpoint: breakpointData.breakpoint,
+                            object: this.mergeObject(breakpointData.breakpoint, breakpointData.settings)
+                        };
 
-                    // callback onMatched
-                    if (typeof this.onMatched === 'function') {
-                        this.onMatched(this.currentObject);
+                        // callback onMatched
+                        if (typeof this.onMatched === 'function') {
+                            this.onMatched(this.currentObject);
+                        }
                     }
-                }
 
-                // stop looping once matched
-                break;
+                    // stop looping once matched
+                    break;
+                }
             }
         }
 
         // if no matching
-        if (!isMatched && this.currentObject.breakpoint !== -1) {
+        if (!isMatched && this.currentObject && this.currentObject.breakpoint !== -1) {
             // update
             this.currentObject = {
                 type: 'default',
@@ -146,7 +149,9 @@ export class MatchMediaScreen {
     }
 
     // get query string from breakpoint
-    getQuery(breakpointIndex: number): string {
+    getQuery(breakpointIndex: number): string | undefined {
+        if (!this.object || !this.object.responsive) return;
+
         const breakpoint = this.object.responsive[breakpointIndex].breakpoint;
 
         let query = `screen and (max-width:${breakpoint}px)`;
@@ -166,7 +171,7 @@ export class MatchMediaScreen {
 
         // if is inherited, check for previous breakpoint
         if (this.isInherit && breakpoint !== -1) {
-            const reversedBreakpoints = getSortedArray(this.object.responsive, false);
+            const reversedBreakpoints = getSortedArray(this.object.responsive as ResponsiveSetting[], false);
 
             for (let i = 0; i < reversedBreakpoints.length; i++) {
                 // only check for bigger breakpoint

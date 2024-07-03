@@ -1,7 +1,4 @@
 const path = require('path');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const packageInfo = require('../package.json');
 
 /**
@@ -48,11 +45,20 @@ const paths = {
 const server = {
     module: {
         rules: [
-            // TypeScript: Use Babel to transpile TypeScript files
-            {test: /\.ts$/, use: ['babel-loader']},
-
-            // JavaScript: Use Babel to transpile JavaScript files
-            {test: /\.js$/, use: ['babel-loader']},
+            // JavaScript and TypeScript: Use Babel and ts-loader to transpile files
+            {
+                test: /\.(js|jsx|ts|tsx)$/,
+                use: [
+                    'babel-loader',
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            transpileOnly: true
+                        }
+                    }
+                ],
+                exclude: /node_modules/
+            },
 
             // Images: Copy image files to build folder
             {test: /\.(?:ico|gif|png|jpg|jpeg)$/i, type: 'asset/resource'},

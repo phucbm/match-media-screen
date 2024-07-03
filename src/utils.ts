@@ -28,6 +28,7 @@ export function debounce<T extends (...args: any[]) => any>(func: T, timeout: nu
     return (...args: Parameters<T>): void => {
         clearTimeout(timer);
         timer = setTimeout(() => {
+            // @ts-ignore
             func.apply(this, args);
         }, timeout);
     };
