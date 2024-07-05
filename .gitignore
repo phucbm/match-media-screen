@@ -2,3 +2,15 @@
 /node_modules/
 /.idea/
 /package-lock.json
+/dist/src/_index.d.ts
+/dist/src/_index.js
+/dist/src/types/CurrentObject.d.ts
+/dist/src/types/CurrentObject.js
+/dist/match-media-screen.js
+/dist/match-media-screen.js.LICENSE.txt
+/dist/src/types/MatchMediaScreenConfig.d.ts
+/dist/src/types/MatchMediaScreenConfig.js
+/dist/src/types/ResponsiveSetting.d.ts
+/dist/src/types/ResponsiveSetting.js
+/dist/src/utils.d.ts
+/dist/src/utils.js
