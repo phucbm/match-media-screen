@@ -1,42 +1,50 @@
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const {paths, packageInfo, bannerConfig, env} = require('./config');
+const path = require("path");
 
 /**
- * Sample variables: "cross-env TARGET=umd"
- * TARGET: libraryTarget
+ * ...
+ * Rest of your existing config code here
+ * ...
  */
-const libraryTarget = env.TARGET || 'umd';
-let filename, experiments = {}, library = undefined;
-switch(libraryTarget){
-    case "module":
-        filename = `${packageInfo.outputFilename}.module.js`;
-        experiments = {
-            outputModule: true,
-        };
-        break;
-    default:
-        //library = `${packageInfo.codeName}`;
-        filename = `${packageInfo.outputFilename}.min.js`;
-}
 
-module.exports = {
+// Define base configuration for match-media-screen.js and match-media-screen.min.js
+const matchMediaScreenConfigBase = {
     mode: 'production',
     devtool: false,
-    entry: paths.entry,
-    experiments,
+    entry: path.resolve(__dirname, '../dist/src/_index.js'),
     output: {
-        filename,
-        library,
-        libraryTarget,
+        libraryTarget: "umd",
         umdNamedDefine: true,
-        // prevent error: `Uncaught ReferenceError: self is not define`
         globalObject: 'this',
     },
     plugins: [
         new webpack.BannerPlugin(bannerConfig)
     ],
+};
+
+// Configuration for match-media-screen.js
+const matchMediaScreenConfig = Object.assign({}, matchMediaScreenConfigBase, {
+    output: {
+        ...matchMediaScreenConfigBase.output,
+        filename: 'match-media-screen.js',
+    },
+});
+
+// Configuration for match-media-screen.min.js
+const matchMediaScreenMinConfig = Object.assign({}, matchMediaScreenConfigBase, {
+    output: {
+        ...matchMediaScreenConfigBase.output,
+        filename: 'match-media-screen.min.js',
+    },
     optimization: {
         minimizer: [new TerserPlugin({extractComments: false})],
     },
-};
+});
+
+module.exports = [
+    // your existing configuration here...
+
+    matchMediaScreenConfig, matchMediaScreenMinConfig
+];
