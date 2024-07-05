@@ -27,13 +27,15 @@
     "build": "cross-env ENTRY=dev webpack --config config/webpack.build.js",
     "prod": "webpack --config config/webpack.prod.js && cross-env TARGET=module webpack --config config/webpack.prod.js",
     "publish": "npm run prod & npm publish",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "test": "jest"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/preset-env": "^7.15.8",
     "@babel/preset-typescript": "^7.15.0",
+    "@types/jest": "^29.5.12",
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^12.0.2",
@@ -42,6 +44,8 @@
     "css-minimizer-webpack-plugin": "^3.1.1",
     "html-loader": "^3.1.0",
     "html-webpack-plugin": "^5.3.2",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "mini-css-extract-plugin": "^2.4.2",
     "postcss-loader": "^6.2.0",
     "postcss-preset-env": "^6.7.0",
@@ -49,6 +53,7 @@
     "sass-loader": "^12.2.0",
     "style-loader": "^3.3.0",
     "terser-webpack-plugin": "^5.3.1",
+    "ts-jest": "^29.1.5",
     "ts-loader": "^9.5.1",
     "typescript": "^4.9.5",
     "webpack": "^5.92.1",

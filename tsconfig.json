@@ -12,7 +12,8 @@
     "moduleResolution": "node",
     "types": [
       "webpack",
-      "node"
+      "node",
+      "jest"
     ],
     "typeRoots": [
       "./node_modules/@types",

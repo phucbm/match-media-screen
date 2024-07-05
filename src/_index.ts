@@ -14,7 +14,7 @@ export class MatchMediaScreen {
     private readonly onUpdate?: (currentObject: CurrentObject | undefined) => void;
     private readonly isInherit: boolean | undefined;
     private readonly debounce: number | undefined;
-    private currentObject: CurrentObject | undefined;
+    currentObject: CurrentObject | undefined;
 
     constructor(config: MatchMediaScreenConfig) {
         this.dev = config.dev === true;
