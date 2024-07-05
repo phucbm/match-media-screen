@@ -19,7 +19,10 @@ module.exports = merge(server, {
     mode: 'development',
 
     // Where webpack looks to start building the bundle
-    entry: [entryPath + '/script.ts'],
+    entry: [
+        path.resolve(__dirname, '../src/_index.ts'),
+        path.resolve(__dirname, '../dev/script.ts')
+    ],
 
     // Where webpack outputs the assets and bundles
     output: {
