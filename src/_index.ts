@@ -1,28 +1,8 @@
 import {debounce, getSortedArray} from "./utils";
+import {MatchMediaScreenConfig} from "./types/MatchMediaScreenConfig";
+import {CurrentObject} from "./types/CurrentObject";
+import {ResponsiveSetting} from "./types/ResponsiveSetting";
 
-interface ResponsiveSetting {
-    breakpoint: number;
-    settings: Record<string, any>;
-}
-
-interface MatchMediaScreenConfig {
-    dev?: boolean;
-    object: {
-        responsive?: ResponsiveSetting[];
-        [key: string]: any;
-    };
-    onMatched?: (currentObject: any) => void;
-    onUpdate?: (currentObject: any) => void;
-    isInherit?: boolean;
-    debounce?: number;
-}
-
-interface CurrentObject {
-    type: string;
-    lastBreakpoint?: number;
-    breakpoint: number | undefined;
-    object: Record<string, any>;
-}
 
 /**
  * Public class
