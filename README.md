@@ -1,11 +1,13 @@
 # Match Media Screen
 
-[![release](https://badgen.net/github/release/phucbm/match-media-screen/)](https://github.com/phucbm/match-media-screen/releases/latest)
-[![minified](https://badgen.net/badge/minified/3KB/cyan)](https://www.jsdelivr.com/package/gh/phucbm/match-media-screen)
-[![jsdelivr](https://data.jsdelivr.com/v1/package/gh/phucbm/match-media-screen/badge?style=rounded)](https://www.jsdelivr.com/package/gh/phucbm/match-media-screen)
-[![npm weekly download](https://badgen.net/npm/dm/match-media-screen)](https://www.npmjs.com/package/match-media-screen)
-[![license](https://badgen.net/github/license/phucbm/match-media-screen/)](https://github.com/phucbm/match-media-screen/blob/main/LICENSE)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/1cc036c8-c6d1-4404-adbd-52182abbdd78/deploy-status)](https://app.netlify.com/sites/match-media-screen/deploys)
+[![npm version](https://badgen.net/npm/v/match-media-screen?icon=npm)](https://www.npmjs.com/package/match-media-screen)
+[![npm downloads](https://badgen.net/npm/dm/match-media-screen?icon=npm)](https://www.npmjs.com/package/match-media-screen)
+[![npm dependents](https://badgen.net/npm/dependents/match-media-screen?icon=npm)](https://www.npmjs.com/package/match-media-screen)
+[![github stars](https://badgen.net/github/stars/phucbm/match-media-screen?icon=github)](https://github.com/phucbm/match-media-screen/)
+[![jsdelivr hits](https://badgen.net/jsdelivr/hits/gh/phucbm/match-media-screen?icon=jsdelivr)](https://www.jsdelivr.com/package/gh/phucbm/match-media-screen)
+[![jsdelivr npm rank](https://badgen.net/jsdelivr/rank/npm/match-media-screen?icon=npm)](https://www.npmjs.com/package/match-media-screen)
+[![github license](https://badgen.net/github/license/phucbm/match-media-screen?icon=github)](https://github.com/phucbm/match-media-screen/blob/main/LICENSE)
+[![Made in Vietnam](https://raw.githubusercontent.com/webuild-community/badge/master/svg/made.svg)](https://webuild.community)
 
 > Observe window.resize and fire corresponding events with given object data.
 
