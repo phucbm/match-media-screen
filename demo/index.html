@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MatchMediaScreen Demo</title>
+  <style>
+      * {
+          margin:0;
+          padding:0;
+          box-sizing:border-box;
+      }
+
+      body {
+          font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          background:#0a0a0a;
+          color:#fff;
+          min-height:100vh;
+          padding:2rem;
+          line-height:1.6;
+      }
+
+      .container {
+          max-width:1200px;
+          margin:0 auto;
+      }
+
+      h1 {
+          text-align:center;
+          margin-bottom:1rem;
+          font-size:3rem;
+          background:linear-gradient(45deg, #ff6b6b, #4ecdc4);
+          -webkit-background-clip:text;
+          -webkit-text-fill-color:transparent;
+          background-clip:text;
+      }
+
+      .subtitle {
+          text-align:center;
+          color:#8b8b8b;
+          margin-bottom:3rem;
+          font-size:1.2rem;
+      }
+
+      .demo-section {
+          margin-bottom:4rem;
+      }
+
+      .demo-section h2 {
+          margin-bottom:2rem;
+          color:#fff;
+          font-size:1.8rem;
+          border-bottom:2px solid #333;
+          padding-bottom:0.5rem;
+      }
+
+      .status-panel {
+          background:linear-gradient(135deg, #1a1a1a, #2a2a2a);
+          border:1px solid #333;
+          border-radius:12px;
+          padding:2rem;
+          margin-bottom:3rem;
+          position:relative;
+          overflow:hidden;
+      }
+
+      .status-panel::before {
+          content:"";
+          position:absolute;
+          top:0;
+          left:0;
+          right:0;
+          height:3px;
+          background:linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      }
+
+      .current-status {
+          display:grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap:2rem;
+          margin-bottom:2rem;
+      }
+
+      .status-item {
+          text-align:center;
+      }
+
+      .status-item .label {
+          font-size:0.875rem;
+          color:#8b8b8b;
+          margin-bottom:0.5rem;
+          text-transform:uppercase;
+          letter-spacing:0.5px;
+      }
+
+      .status-item .value {
+          font-size:1.5rem;
+          font-weight:600;
+          color:#4ecdc4;
+          font-family:"Monaco", "Consolas", monospace;
+      }
+
+      .breakpoint-indicator {
+          font-size:2rem;
+          font-weight:bold;
+          text-align:center;
+          padding:1rem;
+          border-radius:8px;
+          background:#333;
+          color:#fff;
+          transition:all 0.3s ease;
+      }
+
+      .breakpoint-indicator.desktop {
+          background:linear-gradient(45deg, #667eea, #764ba2);
+      }
+
+      .breakpoint-indicator.tablet {
+          background:linear-gradient(45deg, #f093fb, #f5576c);
+      }
+
+      .breakpoint-indicator.mobile {
+          background:linear-gradient(45deg, #4facfe, #00f2fe);
+      }
+
+      .examples-grid {
+          display:grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap:2rem;
+          margin-bottom:3rem;
+      }
+
+      .example-card {
+          background:#1a1a1a;
+          border:1px solid #333;
+          border-radius:12px;
+          padding:1.5rem;
+          transition:border-color 0.3s ease;
+      }
+
+      .example-card:hover {
+          border-color:#4ecdc4;
+      }
+
+      .example-card h3 {
+          margin-bottom:1rem;
+          color:#fff;
+          font-size:1.2rem;
+      }
+
+      .example-output {
+          background:#0d1117;
+          border:1px solid #30363d;
+          border-radius:8px;
+          padding:1rem;
+          font-family:"Monaco", "Consolas", monospace;
+          font-size:0.875rem;
+          color:#c9d1d9;
+          white-space:pre-wrap;
+          min-height:100px;
+          overflow-x:auto;
+      }
+
+      .code-example {
+          background:#0d1117;
+          border:1px solid #30363d;
+          border-radius:8px;
+          padding:1.5rem;
+          font-family:"Monaco", "Consolas", monospace;
+          font-size:0.875rem;
+          color:#c9d1d9;
+          overflow-x:auto;
+          margin-bottom:2rem;
+      }
+
+      .resize-instruction {
+          text-align:center;
+          background:rgba(255, 107, 107, 0.1);
+          border:1px solid rgba(255, 107, 107, 0.3);
+          border-radius:8px;
+          padding:1rem;
+          margin-bottom:3rem;
+          color:#ff6b6b;
+          font-weight:500;
+      }
+
+      .info-panel {
+          position:fixed;
+          top:20px;
+          right:20px;
+          background:rgba(26, 26, 26, 0.95);
+          backdrop-filter:blur(10px);
+          padding:1rem;
+          border-radius:8px;
+          border:1px solid #333;
+          font-size:0.875rem;
+          color:#8b8b8b;
+          max-width:250px;
+      }
+
+      .info-panel strong {
+          color:#4ecdc4;
+      }
+
+      .breakpoint-ranges {
+          display:grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap:1rem;
+          margin-bottom:2rem;
+      }
+
+      .range-item {
+          background:#2a2a2a;
+          padding:1rem;
+          border-radius:8px;
+          text-align:center;
+          border-left:3px solid;
+      }
+
+      .range-item.desktop {
+          border-left-color:#667eea;
+      }
+
+      .range-item.tablet {
+          border-left-color:#f093fb;
+      }
+
+      .range-item.mobile {
+          border-left-color:#4facfe;
+      }
+
+      .range-item .range-name {
+          font-weight:600;
+          margin-bottom:0.5rem;
+      }
+
+      .range-item .range-size {
+          font-size:0.875rem;
+          color:#8b8b8b;
+      }
+
+      @media (max-width:768px) {
+          .info-panel {
+              position:relative;
+              top:auto;
+              right:auto;
+              margin-bottom:2rem;
+              max-width:none;
+          }
+
+          h1 {
+              font-size:2rem;
+          }
+
+          .current-status {
+              grid-template-columns: 1fr;
+              gap:1rem;
+          }
+      }
+
+      @media (max-width:480px) {
+          body {
+              padding:1rem;
+          }
+
+          .examples-grid {
+              grid-template-columns: 1fr;
+          }
+      }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>MatchMediaScreen</h1>
+  <p class="subtitle">Responsive JavaScript library for handling media queries with callbacks</p>
+
+  <div class="info-panel">
+    <strong>Live Development</strong><br>
+    Edit the TypeScript source and see changes instantly with HMR!<br><br>
+    <strong>Try it:</strong> Resize your browser window to see the magic happen!
+  </div>
+
+  <div class="resize-instruction">
+    📱 🖥️ Resize this window to see responsive breakpoints in action!
+  </div>
+
+  <div class="demo-section">
+    <h2>Current Status</h2>
+    <div class="status-panel">
+      <div class="current-status">
+        <div class="status-item">
+          <div class="label">Screen Width</div>
+          <div class="value" id="screen-width">0px</div>
+        </div>
+        <div class="status-item">
+          <div class="label">Current Type</div>
+          <div class="value" id="current-type">-</div>
+        </div>
+        <div class="status-item">
+          <div class="label">Breakpoint</div>
+          <div class="value" id="current-breakpoint">-</div>
+        </div>
+        <div class="status-item">
+          <div class="label">Last Change</div>
+          <div class="value" id="last-change">-</div>
+        </div>
+      </div>
+      <div class="breakpoint-indicator" id="breakpoint-indicator">
+        DESKTOP
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Breakpoint Ranges</h2>
+    <div class="breakpoint-ranges">
+      <div class="range-item desktop">
+        <div class="range-name">Desktop</div>
+        <div class="range-size">> 1024px</div>
+      </div>
+      <div class="range-item tablet">
+        <div class="range-name">Tablet</div>
+        <div class="range-size">481px - 1024px</div>
+      </div>
+      <div class="range-item mobile">
+        <div class="range-name">Mobile</div>
+        <div class="range-size">≤ 480px</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Live Examples</h2>
+    <div class="examples-grid">
+      <div class="example-card">
+        <h3>Basic Usage</h3>
+        <div class="example-output" id="basic-output">Initializing...</div>
+      </div>
+
+      <div class="example-card">
+        <h3>With Inheritance</h3>
+        <div class="example-output" id="inheritance-output">Initializing...</div>
+      </div>
+
+      <div class="example-card">
+        <h3>Complex Configuration</h3>
+        <div class="example-output" id="complex-output">Initializing...</div>
+      </div>
+
+      <div class="example-card">
+        <h3>Event Callbacks</h3>
+        <div class="example-output" id="events-output">Waiting for events...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Usage Examples</h2>
+    <div class="code-example">// Basic usage
+      import { MatchMediaScreen } from '@phucbm/match-media-screen';
+
+      new MatchMediaScreen({
+      object: {
+      value: 'desktop',
+      responsive: [
+      {
+      breakpoint: 1024,
+      settings: { value: 'tablet' }
+      },
+      {
+      breakpoint: 480,
+      settings: { value: 'mobile' }
+      }
+      ]
+      },
+      onMatched: (data) => {
+      console.log('Breakpoint matched:', data);
+      },
+      onUpdate: (data) => {
+      console.log('Window resized:', data);
+      }
+      });
+
+      // Advanced configuration
+      new MatchMediaScreen({
+      object: {
+      columns: 4,
+      spacing: '2rem',
+      fontSize: '16px',
+      responsive: [
+      {
+      breakpoint: 1024,
+      settings: {
+      columns: 2,
+      spacing: '1.5rem'
+      }
+      },
+      {
+      breakpoint: 768,
+      settings: {
+      columns: 1,
+      spacing: '1rem',
+      fontSize: '14px'
+      }
+      }
+      ]
+      },
+      isInherit: true,
+      debounce: 150,
+      dev: true
+      });
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./main.ts"></script>
+</body>
+</html>
