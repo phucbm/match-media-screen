@@ -12,11 +12,14 @@
     "LICENSE"
   ],
   "scripts": {
+    "dev": "vite",
     "build": "pnpm run clean && tsup",
-    "clean": "rm -rf dist",
+    "build:demo": "vite build",
+    "clean": "rm -rf dist dist-demo",
+    "preview": "vite preview",
+    "prepublishOnly": "pnpm run build",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "prepublishOnly": "pnpm run build"
+    "test:watch": "jest --watch"
   },
   "keywords": [
     "typescript",
@@ -45,7 +48,8 @@
     "jest-environment-jsdom": "^30.0.2",
     "ts-jest": "^29.4.0",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite": "^7.0.0"
   },
   "exports": {
     ".": {
